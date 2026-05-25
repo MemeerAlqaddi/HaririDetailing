@@ -5,9 +5,10 @@ const closeBooking = document.getElementById("closeBooking");
 const openBookingButtons = document.querySelectorAll("[data-open-booking]");
 const calendlyEmbed = document.getElementById("calendlyEmbed");
 const reveals = document.querySelectorAll(".reveal");
-const calendlyUrl = "https://calendly.com/hariri-automotive-detailing";
+const calendlyLandingUrl = "https://calendly.com/hariri-automotive-detailing";
 
 let calendlyInitialized = false;
+let activeCalendlyUrl = "";
 
 menuBtn.addEventListener("click", () => {
   navLinks.classList.toggle("active");
@@ -23,7 +24,7 @@ openBookingButtons.forEach(button => {
   button.addEventListener("click", () => {
     bookingPage.classList.add("active");
     document.body.style.overflow = "hidden";
-    initializeCalendly();
+    initializeCalendly(button.dataset.calendlyUrl || calendlyLandingUrl);
   });
 });
 
@@ -40,13 +41,13 @@ function closeBookingPage() {
   document.body.style.overflow = "";
 }
 
-function initializeCalendly() {
-  if (calendlyInitialized || !calendlyEmbed) {
+function initializeCalendly(calendlyUrl) {
+  if (!calendlyEmbed || (calendlyInitialized && activeCalendlyUrl === calendlyUrl)) {
     return;
   }
 
   if (!window.Calendly) {
-    window.setTimeout(initializeCalendly, 100);
+    window.setTimeout(() => initializeCalendly(calendlyUrl), 100);
     return;
   }
 
@@ -55,6 +56,7 @@ function initializeCalendly() {
     url: calendlyUrl,
     parentElement: calendlyEmbed
   });
+  activeCalendlyUrl = calendlyUrl;
   calendlyInitialized = true;
 }
 
