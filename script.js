@@ -46,16 +46,20 @@ function initializeCalendly(calendlyUrl) {
     return;
   }
 
-  if (!window.Calendly) {
-    window.setTimeout(() => initializeCalendly(calendlyUrl), 100);
-    return;
-  }
-
   calendlyEmbed.innerHTML = "";
-  window.Calendly.initInlineWidget({
-    url: calendlyUrl,
-    parentElement: calendlyEmbed
-  });
+  const calendlyFrame = document.createElement("iframe");
+  const embedUrl = new URL(calendlyUrl);
+
+  embedUrl.searchParams.set("embed_domain", window.location.hostname);
+  embedUrl.searchParams.set("embed_type", "Inline");
+
+  calendlyFrame.src = embedUrl.toString();
+  calendlyFrame.title = "Schedule a detailing appointment";
+  calendlyFrame.setAttribute("frameborder", "0");
+  calendlyFrame.setAttribute("scrolling", "yes");
+  calendlyFrame.style.width = "100%";
+  calendlyFrame.style.height = "720px";
+  calendlyEmbed.appendChild(calendlyFrame);
   activeCalendlyUrl = calendlyUrl;
   calendlyInitialized = true;
 }
